@@ -27,12 +27,12 @@ AI_translate/
 
 ### 1️⃣ vinai_en2vi
 - Chịu trách nhiệm dịch **tiếng Anh sang tiếng Việt**
-- Sử dụng mô hình vinai/vinai-translate-en2vi-v2
+- Sử dụng mô hình `vinai/vinai-translate-en2vi-v2`
 - Được đóng gói như một service độc lập
 
 ### 2️⃣ vinai_vi2en
 - Chịu trách nhiệm dịch **tiếng Việt sang tiếng Anh**
-- Kiến trúc tương tự `vinai/vinai-translate-vi2en-v2`
+- Sử dụng mô hình `vinai/vinai-translate-vi2en-v2`
 - Được đóng gói như một service độc lập
 
 ### 3️⃣ vinai_gateway
