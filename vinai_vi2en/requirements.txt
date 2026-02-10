@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+accelerate>=0.21.0
+transformers==4.40.0
+sentencepiece
+protobuf

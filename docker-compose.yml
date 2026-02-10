@@ -1,0 +1,61 @@
+services:
+  # --- SERVICE 1: VIETNAMESE TO ENGLISH ---
+  vi2en-service:
+    build: ./vinai_vi2en
+    container_name: container_vi2en
+    ports:
+      - "8000:8000"           # Cổng ngoài 8000 -> Cổng trong 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+    networks:
+      - vinai-network
+
+  # --- SERVICE 2: ENGLISH TO VIETNAMESE ---
+  en2vi-service:
+    build: ./vinai_en2vi
+    container_name: container_en2vi
+    ports:
+      - "8001:8001"           # Cổng ngoài 8001 -> Cổng trong 8000
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    restart: always
+    networks:
+      - vinai-network
+
+  # --- SERVICE 3: GATEWAY (ROUTER) ---
+  gateway-service:
+    build: ./vinai_gateway
+    container_name: container_gateway
+    ports:
+      - "8080:8080"
+    environment:
+      # --- PHẦN SỬA QUAN TRỌNG NHẤT ---
+      # Gateway gọi sang Model phải dùng cổng NỘI BỘ (8000), KHÔNG dùng cổng 8001
+      
+      # 1. Gọi vi2en (Lưu ý đường dẫn /translate-vi2en)
+      - VI2EN_URL=http://vi2en-service:8000/translate-vi2en
+      
+      # 2. Gọi en2vi (Lưu ý đường dẫn mặc định là /translate)
+      # Nếu bạn đã sửa code python thành /translate-en2vi thì sửa lại dòng dưới nhé
+      - EN2VI_URL=http://en2vi-service:8000/translate-en2vi      
+    depends_on:
+      - vi2en-service
+      - en2vi-service
+    restart: always
+    networks:
+      - vinai-network
+
+networks:
+  vinai-network:
+    driver: bridge
